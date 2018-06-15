@@ -42,7 +42,7 @@ def plot_sample_img(img, name):
     save_image(img, './sample_{}.png'.format(name))
 
 
-# normalization where the entire range of values of X from min to max are mapped to the range 0 to 1
+# normalization where the entire range of values of X from min_value to max_value
 def min_max_normalization(tensor, min_value, max_value):
     min_tensor = tensor.min()
     tensor = (tensor - min_tensor)
@@ -63,7 +63,7 @@ def tensor_round(tensor):
 # create Transforms which will perform operations on the dataset. All operations in one varible
 img_transform = transforms.Compose([
     transforms.ToTensor(),  # transform input images to Tensor
-    transforms.Lambda(lambda tensor:min_max_normalization(tensor, 0, 1)),  # normalization
+    transforms.Lambda(lambda tensor:min_max_normalization(tensor, 0, 1)),  # normalization (0,1)
     transforms.Lambda(lambda tensor:tensor_round(tensor))  # round the values of tensor
 ])
 

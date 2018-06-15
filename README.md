@@ -12,13 +12,13 @@ An autoencoder is an interesting variant with two important changes:
 - First, the number of neurons is the same in the input and the output, therefore we can expect that the output is an image that is not only the same size as the input but actually is the same image.
 
 <p align="center">
-  <img width="800" src="https://github.com/mlaskowski17/Autoencoders/blob/master/images/first.jpg">
+  <img width="700" src="https://github.com/mlaskowski17/Autoencoders/blob/master/images/first.jpg">
 </p>
 
 - Second, we have a bottleneck (latent space) in one of these layers. This means that the number of neurons in that layer is much less than we would normally see, therefore it has to find the way to represent this kind of data the best it can with a much smaller number of neurons.
 
 <p align="center">
-  <img width="800" src="https://github.com/mlaskowski17/Autoencoders/blob/master/images/second.png">
+  <img width="700" src="https://github.com/mlaskowski17/Autoencoders/blob/master/images/second.png">
 </p>
 
 To sum up:
@@ -26,12 +26,12 @@ To sum up:
 
 
 
-## Simple Autonecoder
+## Simple Autonencoder
 
 Autoencoders are one of the unsupervised deep learning models. The aim of an auto encoder is dimensionality reduction and feature discovery. An auto encoder is trained to predict its own input, but to prevent the model from learning the identity mapping, some constraints are applied to the hidden units.
 
 The simplest form of an autoencoder is a feedforward neural network where the input x is fed to the hidden layer of h(x) and h(x) is then feed to calculate the output xˆ. A simple auto encoder is shown in the Figure below
 
 <p align="center">
-  <img width="900" src="https://github.com/mlaskowski17/Autoencoders/blob/master/images/simple_autoencoder.png">
+  <img width="700" src="https://github.com/mlaskowski17/Autoencoders/blob/master/images/simple_autoencoder.png">
 </p>
