@@ -30,4 +30,8 @@ To sum up:
 
 Auto encoders are one of the unsupervised deep learning models. The aim of an auto encoder is dimensionality reduction and feature discovery. An auto encoder is trained to predict its own input, but to prevent the model from learning the identity mapping, some constraints are applied to the hidden units.
 
-The simplest form of an auto encoder is a feedforward neural network where the input r latexImg('x') is fed to the hidden layer of h(x) and h(x) is then fed to calculate the output r latexImg('\hat{x}') . A simple auto encoder is shown in Fig below.
+The simplest form of an auto encoder is a feedforward neural network where the input x is fed to the hidden layer of h(x) and h(x) is then fed to calculate the output x_hat . A simple auto encoder is shown in Fig below.
+
+<p align="center">
+  <img width="500" src="https://github.com/mlaskowski17/Autoencoders/blob/master/images/ae_about.png">
+</p>
