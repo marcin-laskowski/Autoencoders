@@ -3,7 +3,8 @@
  Implementation of different types of autoencoders in PyTorch
 
 
-### Introduction
+## Introduction
+
 Neural Networks are remarkably efficient tools to solve a number of really difficult problems. The first application of neural networks usually revolved around classification problems. Classification means that we have an image as an input and the output is for example simple decision whether it is a car or a chair. The input will have as many nodes as there are pixels in the input image, and the output will have to units, so we look at this two to find which fires the most to make the decision. Between this two there are hidden layers where the neural network is asked to build an inner representation of the problem that is efficient at recognizing these objects.
 
 So the question is what is autoencoder?
@@ -22,3 +23,11 @@ An autoencoder is an interesting variant with two important changes:
 
 To sum up:
 **Autoencoders are neural networks that are capable of creating sparse representations of the input data and can therefore be used for image compression.** There are denoising autoencoders that after learning these sparse representations, can be presented with noisy images. What is even better is a variant that is called the variational autoencoder that not only learns these sparse representations, but can also draw new images as well. We can, for instance, ask it to create new handwritten digits and we can actually expect the results to make sense.
+
+
+
+## Simple Autonecoder
+
+Auto encoders are one of the unsupervised deep learning models. The aim of an auto encoder is dimensionality reduction and feature discovery. An auto encoder is trained to predict its own input, but to prevent the model from learning the identity mapping, some constraints are applied to the hidden units.
+
+The simplest form of an auto encoder is a feedforward neural network where the input r latexImg('x') is fed to the hidden layer of h(x) and h(x) is then fed to calculate the output r latexImg('\hat{x}') . A simple auto encoder is shown in Fig below.
