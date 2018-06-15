@@ -31,5 +31,5 @@ To sum up:
 Auto encoders are one of the unsupervised deep learning models. The aim of an auto encoder is dimensionality reduction and feature discovery. An auto encoder is trained to predict its own input, but to prevent the model from learning the identity mapping, some constraints are applied to the hidden units.
 
 <p align="center">
-  <img width="1000" src="https://github.com/mlaskowski17/Autoencoders/blob/master/images/ae_about.png">
+  <img width="1050" src="https://github.com/mlaskowski17/Autoencoders/blob/master/images/ae_about.png">
 </p>
