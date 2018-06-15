@@ -1,4 +1,4 @@
-# Autoencoders
+# Autocncoders
 
  Implementation of different types of autoencoders in PyTorch
 
@@ -26,12 +26,21 @@ To sum up:
 
 
 
-## Simple Autonencoder
+## Simple AutoEncoder
 
 Autoencoders are one of the unsupervised deep learning models. The aim of an auto encoder is dimensionality reduction and feature discovery. An auto encoder is trained to predict its own input, but to prevent the model from learning the identity mapping, some constraints are applied to the hidden units.
 
-The simplest form of an autoencoder is a feedforward neural network where the input x is fed to the hidden layer of h(x) and h(x) is then feed to calculate the output xˆ. A simple auto encoder is shown in the Figure below
+The simplest form of an autoencoder is a feedforward neural network where the input x is fed to the hidden layer of h(x) and h(x) is then feed to calculate the output xˆ. A simple autoencoder used in the code is shown in the Figure below
 
 <p align="center">
   <img width="700" src="https://github.com/mlaskowski17/Autoencoders/blob/master/images/simple_autoencoder.png">
 </p>
+
+In the code with the simple Autoencoder in PyTorch as the dataset was used MNIST. The input is binarized and Binary Cross Entropy has been used as the loss function. The hidden layer contains 64 units.
+
+
+## Denoising AutoEncoder
+
+n a denoising autoencoder the goal is to create a more robust model to noise. The motivation is that the hidden layer should be able to capture high level representations and be robust to small changes in the input. The input of a DAE is noisy data but the target is the original data without noise. So the DAE can be used to denoise the input.
+
+In the PyTorch implementation of a DAE it was added some random noise to the data. Thank to that it was obtained corrupted inputs. In this case 20% noise has been added to the input.
