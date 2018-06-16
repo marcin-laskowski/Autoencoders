@@ -38,13 +38,6 @@ def to_img(x):
     return x
 
 
-# function to create noise
-def add_noise(img):
-    noise = torch.randn(img.size()) * noise_value
-    noisy_img = img + noise
-    return noisy_img
-
-
 # function to plot sample image
 def plot_sample_img(img, name):
     img = img.view(1, 28, 28)
