@@ -2,8 +2,8 @@
 Implementation of the Denoising Autoencoder in PyTorch. Dataset used to perform this task is MNIST.
 The input is binarized and Binary Cross Entropy has been used as the loss function.
 The hidden layer contains 64 units.
-To train a DAE, we can simply add some random noise to the data and create corrupted inputs.
-In this case 20% noise has been added to the input.
+In a variational autoEncoders, there is a strong assumption for the distribution that is learned in
+the hidden representation. The hidden representation is constrained to be a multivariate gaussian.
 '''
 
 import os
@@ -29,8 +29,8 @@ noise_value = 0.4
 
 
 # create directory 'auto_output' in which input and output will be saved
-if not os.path.exists('./de_auto_output'):
-    os.mkdir('./de_auto_output')
+if not os.path.exists('./var_auto_output'):
+    os.mkdir('./var_auto_output')
 
 
 # function to visualise the image
@@ -86,31 +86,53 @@ dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 ###################################################################################################
 # NEURAL NETWORK
 
-class denoising_autoencoder(nn.Module):
+class variation_autoencoder(nn.Module):
     def __init__(self):
-        super(denoising_autoencoder, self).__init__()
+        super(variation_autoencoder, self).__init__()
         self.encoder = nn.Sequential(
-            nn.Linear(28 * 28, 256),
+            nn.Linear(28 * 28, 400),
             nn.ReLU(True),
-            nn.Linear(256, 64),
+            nn.Linear(400, 40),
             nn.ReLU(True))
         self.decoder = nn.Sequential(
-            nn.Linear(64, 256),
+            nn.Linear(20, 400),
             nn.ReLU(True),
-            nn.Linear(256, 28 * 28),
+            nn.Linear(400, 28 * 28),
             nn.Sigmoid())
 
+    def reparametrize(self, mu, logvar):
+        var = logvar.exp()
+        std = var.sqrt()
+        eps = Variable(torch.cuda.FloatTensor(std.size()).normal_())
+        return eps.mul(std).add(mu)
+
     def forward(self, x):
-        x = self.encoder(x)
-        x = self.decoder(x)
-        return x
+        h = self.encoder(x)
+        mu = h[:, :20]
+        logvar = h[:, 20:]
+        z = self.reparametrize(mu, logvar)
+        x_hat = self.decoder(z)
+        return x_hat, mu, logvar
+
+    def generation_with_interpolation(self, x_one, x_two, alpha):
+        hidden_one = self.encoder(x_one)
+        hidden_two = self.encoder(x_two)
+        mu_one = hidden_one[:, :20]
+        logvar_one = hidden_one[:, 20:]
+        mu_two = hidden_two[:, :20]
+        logvar_two = hidden_two[:, 20:]
+        mu = (1 - alpha) * mu_one + alpha * mu_two
+        logvar = (1 - alpha) * logvar_one + alpha * logvar_two
+        z = self.reparametrize(mu, logvar)
+        generated_image = self.decoder(z)
+        return generated_image
 
 
-model = denoising_autoencoder().cuda()
+model = variation_autoencoder().cuda()
 # definition of the LOSS FUNCTION: Binary Cross Entropy
-criterion = nn.BCELoss()
+BCE = nn.BCELoss()
 # type of OPTIMIZER: Adam
-optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=1e-5)
+optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
 
 ###################################################################################################
@@ -120,28 +142,36 @@ for epoch in range(num_epochs):
     for data in dataloader:
         img, _ = data
         img = img.view(img.size(0), -1)
-        noisy_img = add_noise(img)
-        noisy_img = Variable(noisy_img).cuda()
         img = Variable(img).cuda()
         # ===================forward=====================
-        output = model(noisy_img)
-        loss = criterion(output, img)
-        MSE_loss = nn.MSELoss()(output, img)
+        x_hat, mu, logvar = model(img)
+        NKLD = mu.pow(2).add(logvar.exp()).mul(-1).add(logvar.add(1))
+        KLD = torch.sum(NKLD).mul(-0.5)
+        KLD /= 128 * 784
+        loss = BCE(x_hat, img) + KLD
         # ===================backward====================
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
     # ===================log========================
-    print('epoch [{}/{}], loss:{:.4f}, MSE_loss:{:.4f}'
-          .format(epoch + 1, num_epochs, loss.data[0], MSE_loss.data[0]))
+    print('epoch [{}/{}], loss:{:.4f}'
+          .format(epoch + 1, num_epochs, loss.data[0]))
     if epoch % 10 == 0:
         x = to_img(img.cpu().data)
-        x_hat = to_img(output.cpu().data)
-        x_noisy = to_img(noisy_img.cpu().data)
-        weights = to_img(model.encoder[0].weight.cpu().data)
-        save_image(x, './de_auto_output/x_{}.png'.format(epoch))
-        save_image(x_hat, './de_auto_output/x_hat_{}.png'.format(epoch))
-        save_image(x_noisy, './de_auto_output/x_noisy_{}.png'.format(epoch))
-        save_image(weights, './de_auto_output/filters_epoch_{}.png'.format(epoch))
+        x_hat = to_img(x_hat.cpu().data)
 
-torch.save(model.state_dict(), './sim_dautoencoder.pth')
+        save_image(x, './var_auto_output/x_{}.png'.format(epoch))
+        save_image(x_hat, './var_auto_output/x_hat_{}.png'.format(epoch))
+
+        batch = iter(dataloader).next()[0]
+        batch = batch.view(batch.size(0), -1)
+        batch = Variable(batch).cuda()
+        x_one = batch[0:1]
+        x_two = batch[1:2]
+        generated_images = []
+        for alpha in torch.arange(0.0, 1.0, 0.1):
+            generated_images.append(model.generation_with_interpolation(x_one, x_two, alpha))
+        generated_images = torch.cat(generated_images, 0).cpu().data
+        save_image(generated_images.view(-1, 1, 28, 28),
+                   './var_auto_output/generated_output_interpolate_{}.png'.format(epoch), nrow=1)
+torch.save(model.state_dict(), './sim_variational_autoencoder.pth')
