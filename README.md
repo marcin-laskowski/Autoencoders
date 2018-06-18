@@ -38,6 +38,8 @@ The simplest form of an autoencoder is a feedforward neural network where the in
 
 In the code with the simple Autoencoder in PyTorch as the dataset was used MNIST. The input is binarized and Binary Cross Entropy has been used as the loss function. The hidden layer contains 64 units.
 
+The fundamental problem with autoencoders, for generation, is that the latent space they convert their inputs to and where their encoded vectors lie, may not be continuous, or allow easy interpolation.
+
 
 ## Denoising AutoEncoders
 
@@ -50,9 +52,9 @@ In the PyTorch implementation of a DAE it was added some random noise to the dat
 
 The idea behind [variational autoencoders](https://arxiv.org/abs/1312.6114) is that instead of mapping any input to a fixed vector we want to map our input onto a distribution. So the only thing that is different in the variational autoencoder is that our normal bottleneck vector C is replaced by two separate vectors: one representing the mean of our distribution and the other one representing the standard deviation of that distribution. So whenever we need a vector to feed through our decoder network the only thing that we have to do is take a sample from the distribution and then feed it to the decoder.
 
-To train the variational autoencoders the loss function in this case actually consists of two terms. The first term represents the reconstruction loss so this is really the same as the autoencoder step except that here there is an expectation operator because we are sampling from the distribution and then the second part of the loss function is what we call the KL divergence.
+A loss function is introduced which essentially is a sum of two losses — a generative loss, (which is a mean squared error that measures how well the output is generated from the given input. This error encourages the decoder to learn to reconstruct the input data accurately. If the decoder doesn’t reconstruct the data well in its output, this term would show a huge loss) and a latent loss (regulariser, a KL divergence between the encoder’s distribution and Gaussian distribution. It captures how closely the latent variables match the normal distribution or unit Gaussian)
 
-In a variational autoEncoders, there is a strong assumption for the distribution that is learned in the hidden representation. The hidden representation is constrained to be a multivariate gaussian. The motivation behind this is that we assume the hidden representation learns high level features and these features follow a very simple form of distribution. Thus, we assume that each feature is a gaussian distribution and their combination which creates the hidden representation is a multivariate gaussian.
+As a property of VAE, the output from encoder is expected in Gaussian distribution with mean zero and variance one. This is done to ensure that similar features from the input data don’t end up with completely different representations. Thus, any deviation from the Gaussian distribution, is captured by the KL divergence loss. Further, to optimize KL divergence, instead of encoder generating a vector of real values, it’s made to generate a vector of means and a vector of standard deviations.
 
 <p align="center">
   <img width="700" src="https://github.com/mlaskowski17/Autoencoders/blob/master/images/variational_AE.png">
@@ -62,3 +64,10 @@ In a variational autoEncoders, there is a strong assumption for the distribution
 ## Disentangled Variational AutoEncoders
 
 [Disentangled variational autoencoders](https://arxiv.org/abs/1606.05579) are a new class of the Variational autoencoders that has a lot of promising results. The basic idea behind this encoders is that you want to make sure that the different neurons in our latent distribution are uncorrelated, which means that they all try and learn something different about the input data. So to implement this the only thing we have to change is add one hyperparameter through our loss function that weighs how much this KL divergence is present in the loss function.
+
+
+## Additional Materials:
+1. [What is Variational Autoencoder?](https://jaan.io/what-is-variational-autoencoder-vae-tutorial/)
+2. [Variational Autoencoders Explained](http://kvfrans.com/variational-autoencoders-explained/)
+3. [Intuitively Understanding Variational Autoencoders](https://towardsdatascience.com/intuitively-understanding-variational-autoencoders-1bfe67eb5daf)
+4. [Variational Autoencoders](https://www.jeremyjordan.me/variational-autoencoders/)
