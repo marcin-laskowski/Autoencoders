@@ -66,8 +66,8 @@ As a property of VAE, the output from encoder is expected in Gaussian distributi
 [Disentangled variational autoencoders](https://arxiv.org/abs/1606.05579) are a new class of the Variational autoencoders that has a lot of promising results. The basic idea behind this encoders is that you want to make sure that the different neurons in our latent distribution are uncorrelated, which means that they all try and learn something different about the input data. So to implement this the only thing we have to change is add one hyperparameter through our loss function that weighs how much this KL divergence is present in the loss function.
 
 
-## Additional Materials:
-1. [What is Variational Autoencoder?](https://jaan.io/what-is-variational-autoencoder-vae-tutorial/)
+## Additional Materials
+1. [What is Variational Autoencoder](https://jaan.io/what-is-variational-autoencoder-vae-tutorial/)
 2. [Variational Autoencoders Explained](http://kvfrans.com/variational-autoencoders-explained/)
 3. [Intuitively Understanding Variational Autoencoders](https://towardsdatascience.com/intuitively-understanding-variational-autoencoders-1bfe67eb5daf)
 4. [Variational Autoencoders](https://www.jeremyjordan.me/variational-autoencoders/)
