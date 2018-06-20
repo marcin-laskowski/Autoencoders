@@ -92,17 +92,19 @@ class variation_autoencoder(nn.Module):
             nn.Linear(400, 28 * 28),
             nn.Sigmoid())
 
+    # reparametrization trick which allow to compute backpropagation over random sampling
     def reparametrize(self, mu, logvar):
         var = logvar.exp()
         std = var.sqrt()
         eps = Variable(torch.cuda.FloatTensor(std.size()).normal_())
         return eps.mul(std).add(mu)
 
+    # forward path
     def forward(self, x):
-        h = self.encoder(x)
-        mu = h[:, :20]
-        logvar = h[:, 20:]
-        z = self.reparametrize(mu, logvar)
+        h = self.encoder(x)  # encoder part
+        mu = h[:, :20]  # calculate mean of the sample data
+        logvar = h[:, 20:]  # lag scale of the value to remove negative values
+        z = self.reparametrize(mu, logvar)  #
         x_hat = self.decoder(z)
         return x_hat, mu, logvar
 
