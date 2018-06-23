@@ -15,15 +15,14 @@ from torchvision.datasets import MNIST
 from torchvision.utils import save_image
 
 
-###################################################################################################
+# ===================================== DEFINE HYPERPARAMETERS ===================================
 # Define Hyperparameters
 num_epochs = 200
 batch_size = 128
 learning_rate = 1e-3
 
 
-###################################################################################################
-# FUNCTIONS - DATA OPERATIONS
+# ===================================== FUNCTIONS - DATA OPERATIONS ==============================
 
 # create directory 'auto_output' in which input and output will be saved
 if not os.path.exists('./auto_output'):
@@ -57,8 +56,7 @@ def tensor_round(tensor):
     return torch.round(tensor)
 
 
-###################################################################################################
-# INPUT DATA
+# ========================================== INPUT DATA ===========================================
 
 # create Transforms which will perform operations on the dataset. All operations in one varible
 img_transform = transforms.Compose([
@@ -73,8 +71,7 @@ dataset = MNIST('./data', transform=img_transform, download=True)
 dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
 
-###################################################################################################
-# NEURAL NETWORK
+# ========================================== NEURAL NETWORK =======================================
 
 class autoencoder(nn.Module):
     def __init__(self):
@@ -103,8 +100,7 @@ criterion = nn.BCELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=1e-5)
 
 
-###################################################################################################
-# TRAINING
+# ======================================= TRAINING ================================================
 
 for epoch in range(num_epochs):
     for data in dataloader:
